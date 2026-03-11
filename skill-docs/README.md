@@ -1,0 +1,32 @@
+# uhomes-student-housing Skill 规划文档
+
+`uhomes-student-housing` 是一个面向 OpenClaw / Claude 生态的 AI Skill，帮助留学生通过 AI 对话找到 [uhomes.com](https://www.uhomes.com) 上的海外住宿，并引导完成预订。
+
+## 文档目录
+
+| 文件 | 内容 | 面向对象 |
+|------|------|----------|
+| [api-spec.md](./api-spec.md) | 后端搜索接口需求规范（JSON 格式、字段定义、错误码） | uhomes 技术团队 |
+| [utm-config.md](./utm-config.md) | GA4 UTM 归因配置要求（参数规范、渠道分组、报告视图） | uhomes 数据/增长团队 |
+| [kpi-expectations.md](./kpi-expectations.md) | KPI 预期框架（与 OpenClaw 生态阶段匹配的分层指标） | 业务决策层 |
+
+## 项目背景
+
+- **Skill 名称**：`uhomes-student-housing`
+- **目标平台**：OpenClaw (ClawHub) + Claude.ai
+- **数据来源**：唯一来源为 [uhomes.com](https://en.uhomes.com)
+- **商业目标**：通过 AI 对话为 uhomes.com 带来有意向的住宿搜索流量
+
+## 当前状态
+
+- [x] 整体规划方案完成
+- [x] API 接口需求文档
+- [x] UTM 归因配置文档  
+- [x] KPI 预期框架
+- [ ] SKILL.md 草稿开发中
+- [ ] uhomes 技术接口对接
+- [ ] ClawHub 发布
+
+---
+
+*维护者：Neil @ uhomes*
