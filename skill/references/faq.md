@@ -60,8 +60,29 @@ For the following, acknowledge briefly and redirect — do not attempt to answer
 
 ---
 
+## Mobile & WeChat Access
+
+**Q: Can I use uhomes on my phone?**
+A: Yes. uhomes.com is mobile-friendly. Chinese-speaking users can also use the **异乡好居** WeChat Mini Program — search "异乡好居" in WeChat, or open the Mini Program directly (AppID: `wx787e7828382ba76a`, path: `pages/index/index?xcode=000a95434637bdf71105`).
+
+**Q: 怎么在微信上找房？**
+A: 在微信中搜索小程序「异乡好居」即可浏览 uhomes 房源。AppID: `wx787e7828382ba76a`。
+
+---
+
+## Personalised Help (专属顾问服务)
+
+**Q: Can a uhomes advisor help me find housing?**
+A: Yes. If you have specific requirements or prefer one-on-one assistance, you can submit a personalised housing request form: [Submit request](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105). A uhomes advisor will follow up with tailored options.
+
+**Q: 可以让顾问帮我找房吗？**
+A: 可以。填写[专属租房需求表](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105)，uhomes 顾问会根据你的需求一对一推荐房源。
+
+---
+
 ## Contact & Support
 
 For any question beyond the scope of this skill, direct users to:
 - **uhomes.com advisors**: Live chat at en.uhomes.com (24/7 multilingual support)
 - **Specific enquiries**: Click the "Enquiry" or "Ask Me" button on any property page
+- **Personalised request**: [Submit a demand form](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105)

@@ -81,15 +81,25 @@ University slugs follow these conventions:
 
 ---
 
-## UTM Parameters (always append to links shown to users)
+## Tracking Parameters (always append to links shown to users)
+
+All user-facing links must carry **both** the partner `xcode` and UTM parameters:
 
 ```
-?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug}
+?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug}
 ```
+
+| Parameter | Value | Purpose |
+|-----------|-------|---------|
+| `xcode` | `000a95434637bdf71105` | uhomes partner referral code — enables attribution on the uhomes side |
+| `utm_source` | `openclaw` (or `claude`) | GA4 source tracking |
+| `utm_medium` | `ai_skill` | GA4 medium |
+| `utm_campaign` | `student-housing-skill-v1` | GA4 campaign |
+| `utm_content` | `{city-slug}` | GA4 city-level breakdown |
 
 Set `utm_content` to the city slug (e.g. `london`, `manchester`, `sydney`).
 
-**Important**: Fetch pages WITHOUT UTM. Add UTM only to the final links presented to the user.
+**Important**: Fetch pages WITHOUT tracking params. Add them only to the final links presented to the user.
 
 ---
 
@@ -99,4 +109,41 @@ Set `utm_content` to the city slug (e.g. `london`, `manchester`, `sydney`).
 en.uhomes.com/{country}/{city}/detail-apartments-{id}
 ```
 
-These are found within search/listing pages. Always append UTM when linking to them.
+These are found within search/listing pages. Always append tracking parameters when linking to them.
+
+---
+
+## Partner-Specific Pages
+
+### Exclusive Demand Form (专属租房需求表)
+
+For users with specific or complex requirements that standard search cannot satisfy:
+
+```
+https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105
+```
+
+Use this link when:
+- The user's city/university is not well-covered on uhomes.com
+- The user has very specific requirements (e.g. pet-friendly, specific building, accessibility needs)
+- The user wants a uhomes advisor to find options for them personally
+
+### Exclusive Website Entry (专属网站入口)
+
+```
+https://www.uhomes.com?xcode=000a95434637bdf71105
+```
+
+General-purpose entry link with partner attribution. Use as a top-level fallback.
+
+### WeChat Mini Program (微信小程序)
+
+For Chinese-speaking users who prefer WeChat:
+
+| Field | Value |
+|-------|-------|
+| AppID | `wx787e7828382ba76a` |
+| Original ID | `gh_ac67b37aa05a` |
+| Path | `pages/index/index?xcode=000a95434637bdf71105` |
+
+Provide this info when a Chinese-speaking user asks about mobile access or WeChat.
