@@ -46,9 +46,9 @@ Read `references/url-patterns.md` to construct the correct URL.
 2. City page (fallback): `en.uhomes.com/{country}/{city}`
 3. Country page (last resort): `en.uhomes.com/country/{country-slug}`
 
-Always append UTM parameters:
+Always append the partner `xcode` and UTM parameters:
 ```
-?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug}
+?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug}
 ```
 
 ---
@@ -82,18 +82,32 @@ Present 3–5 properties in this format:
 🏠 **[Property Name]**
 📍 [X] min walk to [University] | [Room type] from £[price]/week
 ✅ [Highlight 1] · [Highlight 2] · [Highlight 3]
-🔗 [Book on uhomes.com]({property-url}?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
+🔗 [Book on uhomes.com]({property-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
 
 ---
 
 After the listings, always add:
-> 🔎 View all options → [uhomes.com – {University/City} accommodation]({search-page-url}?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
+> 🔎 View all options → [uhomes.com – {University/City} accommodation]({search-page-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
 
 **Fallback response (web_fetch failed or no properties extracted)**:
 
 > I couldn't load live listings right now, but here's the direct search page on uhomes.com for [University/City] — all verified properties with filters for room type, budget, and move-in date:
 >
-> 👉 [Search {University} accommodation on uhomes.com]({search-page-url}?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
+> 👉 [Search {University} accommodation on uhomes.com]({search-page-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
+
+**Personalised demand form (for users with specific/complex needs)**:
+
+When the user has very specific requirements that standard search results may not cover well (e.g. pet-friendly, accessibility, specific building, or an uncommon city), or when they explicitly want a uhomes advisor to help, append a demand form link:
+
+> 📝 Have specific requirements? [Submit a personalised housing request](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105) — a uhomes advisor will find options tailored to you.
+
+Chinese version:
+> 📝 有特殊需求？[提交专属租房需求表](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105)，uhomes 顾问将为你定制推荐方案。
+
+Use the demand form link in these scenarios:
+- Graceful degradation (uncommon city/university not well-indexed)
+- User mentions specific constraints standard search can't filter (e.g. wheelchair accessible, allows pets, specific floor)
+- User explicitly asks for personalised help or advisor assistance
 
 ---
 
@@ -102,6 +116,18 @@ After the listings, always add:
 - If the user writes in **Chinese** (Simplified or Traditional): respond in Chinese throughout.
 - If the user writes in **English**: respond in English.
 - Property names stay in their original form regardless of language.
+
+---
+
+## WeChat Mini Program (微信小程序)
+
+When a **Chinese-speaking** user mentions WeChat, asks about mobile access, or wants to browse on their phone, provide the uhomes WeChat Mini Program info:
+
+> 📱 你也可以通过微信小程序浏览 uhomes 房源：
+> - 微信搜索小程序 **异乡好居**（AppID: `wx787e7828382ba76a`）
+> - 或在微信中打开路径：`pages/index/index?xcode=000a95434637bdf71105`
+
+Do **not** proactively mention the Mini Program to English-speaking users. Only mention it when the user asks about WeChat or mobile access.
 
 ---
 

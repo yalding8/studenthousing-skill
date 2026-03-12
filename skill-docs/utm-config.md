@@ -6,11 +6,19 @@
 
 ---
 
-## 1. UTM 参数规范
+## 1. 追踪参数规范
 
-所有从 Skill 生成的 uhomes.com 链接均携带以下固定 UTM 参数。
+所有从 Skill 生成的 uhomes.com 链接均携带 **uhomes 合作伙伴 xcode** 和 **UTM 参数**，实现双重归因。
 
-### 1.1 标准参数值
+### 1.0 合作伙伴 xcode（uhomes 侧归因）
+
+| 参数 | 值 | 说明 |
+|------|----|------|
+| `xcode` | `000a95434637bdf71105` | uhomes 合作伙伴推荐码，在 uhomes 内部系统中追踪来源 |
+
+> **说明**：`xcode` 是 uhomes 平台原生的合作伙伴追踪参数，与 GA4 UTM 参数互补。UTM 归因于 GA4 侧，xcode 归因于 uhomes CRM/业务系统侧。两者同时使用，确保双侧均可独立统计。
+
+### 1.1 UTM 标准参数值
 
 | 参数 | 值 | 说明 |
 |------|----|------|
@@ -32,13 +40,19 @@
 
 ```
 # 曼彻斯特大学搜索结果页
-https://en.uhomes.com/uk/manchester/university-of-manchester?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=manchester
+https://en.uhomes.com/uk/manchester/university-of-manchester?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=manchester
 
 # 伦敦城市搜索页
-https://en.uhomes.com/uk/london/student-accommodation?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=london
+https://en.uhomes.com/uk/london/student-accommodation?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=london
 
 # 具体房源页
-https://en.uhomes.com/uk/manchester/iq-manchester?utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=manchester
+https://en.uhomes.com/uk/manchester/iq-manchester?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content=manchester
+
+# 专属租房需求表（个性化需求用户）
+https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105
+
+# 专属网站入口
+https://www.uhomes.com?xcode=000a95434637bdf71105
 ```
 
 ---
@@ -122,13 +136,42 @@ Skill 正式上线前，数据团队需完成以下验证：
 
 ---
 
-## 5. 后续扩展（可选，非上线阻断）
+## 5. 已接入的 uhomes 合作渠道
+
+### 5.1 专属租房需求表
+
+| 项目 | 值 |
+|------|-----|
+| 链接 | `https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105` |
+| 用途 | 用户提交个性化租房需求，uhomes 顾问一对一跟进 |
+| 触发场景 | 冷门城市降级、用户有特殊需求、用户主动要求顾问协助 |
+
+### 5.2 专属网站入口
+
+| 项目 | 值 |
+|------|-----|
+| 链接 | `https://www.uhomes.com?xcode=000a95434637bdf71105` |
+| 用途 | 通用入口，带合作伙伴归因 |
+
+### 5.3 微信小程序（异乡好居）
+
+| 项目 | 值 |
+|------|-----|
+| AppID | `wx787e7828382ba76a` |
+| 原始 ID | `gh_ac67b37aa05a` |
+| 路径 | `pages/index/index?xcode=000a95434637bdf71105` |
+| 用途 | 面向中文用户的移动端入口，Skill 在用户提及微信或移动端时推荐 |
+
+---
+
+## 6. 后续扩展（可选，非上线阻断）
 
 | 扩展项 | 说明 | 建议时机 |
 |--------|------|----------|
 | UTM 专属优惠码 | 为 Skill 渠道用户提供专属折扣码（如 `SKILL10`），实现比 UTM 更精准的转化追踪 | v1.1 稳定后 |
 | 跨设备追踪 | 用户在 OpenClaw 上看到推荐，在手机上完成预订——当前 UTM 无法追踪跨设备行为 | 需评估实现成本 |
 | Webhook 回调 | 预订完成后通过 Webhook 通知 Skill 维护方，实现预订级别的精准归因 | API 接口就绪后 |
+| 小程序数据打通 | 将微信小程序内的 xcode 转化数据与 GA4 UTM 数据关联 | 小程序流量规模起来后 |
 
 ---
 
