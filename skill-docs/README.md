@@ -24,9 +24,11 @@
 - [x] UTM 归因配置文档（含 xcode 双重归因）
 - [x] KPI 预期框架
 - [x] SKILL.md v1.0 完成（含核心工作流、降级策略、语言处理）
-- [x] 参考文件完成（url-patterns / city-index / room-types / faq）
-- [x] 示例对话 6 组（英文/中文/对比/追问/降级/需求表+小程序）
+- [x] 参考文件完成（url-patterns / city-index / room-types / faq / city-guides / decision-guide）
+- [x] 示例对话 6 组（英文/中文/对比/顾问摸底/降级/需求表+小程序）— 基于实测数据重写
 - [x] uhomes 合作渠道整合（xcode 追踪 / 专属需求表 / 微信小程序）
+- [x] Skill 目录名修正（`uhomes-student-housing/`）
+- [x] 专家评审通过（技术 8.2 / 战略 6.8→顾问模式升级中）
 - [ ] uhomes 侧 GA4 配置验收（utm-config.md §4 验收清单）
 - [ ] uhomes 侧确认 xcode 归因正常工作
 - [ ] uhomes 技术接口对接（非发布阻断，v2.0 升级项）
