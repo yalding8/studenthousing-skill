@@ -80,28 +80,81 @@ Always append the partner `xcode` and UTM parameters:
 
 ### Step 3 — Fetch Property Data
 
-Use `web_fetch` on the university or city page URL (without UTM, those go on the final links shown to user).
+Perform **two fetches** (in parallel if possible):
 
+**Fetch A — University/City listings** (primary):
 ```
 web_fetch: https://en.uhomes.com/{country}/{city}/{university-slug}
 ```
 
-From the page, extract:
-- Property names
+**Fetch B — Must-Stay list** (optional, for ranking boost):
+```
+web_fetch: https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82
+```
+Known city IDs: London=7. For other cities, skip Fetch B — not all cities have Must-Stay data. If Fetch B fails or returns "No ranking data yet", proceed with Fetch A data only.
+
+From **Fetch A**, extract per property:
+- Property name
 - Price per week (and currency)
 - Distance to university / walk time
-- Key highlights (No Service Fee, Bills included, Gym, 24h security, Near Chinese Supermarket, etc.)
-- Property detail URLs
+- Key highlights (No Service Fee, Bills included, Gym, 24h security, etc.)
+- Property detail URL
+- User rating and review count (if visible)
 
-**Data processing rules** (apply before presenting to user):
-1. **Filtering**: If user specified budget, exclude properties above budget. If user specified room type, only include matching types.
-2. **Sorting**: Sort by distance (nearest first). On tie, sort by price (lowest first).
-3. **Selection**: Present the top 5 after filtering and sorting. If fewer than 3 remain after filtering, relax filters and note this to the user.
-4. **Price display**: Show current price. If discounted, show both: "£296/week ~~£305~~".
-5. **Distance display**: Use walk time (e.g. "5 min walk") when available. If only miles shown, keep as-is.
-6. **Dedup**: If multiple properties from the same brand appear, prefer the one closest to university.
+From **Fetch B**, extract:
+- Ranked property names (position 1-10)
+- Ratings and review counts
+- "Reason" tags (e.g. "Star Service", "Well-connected")
 
-**If web_fetch fails or returns no property data**: skip to Step 4 fallback. Do not show an error to the user.
+#### Scoring algorithm
+
+For each property from Fetch A, compute a **recommendation score** (0-100):
+
+```
+score = distance_score + budget_score + must_stay_bonus + quality_score
+
+Where:
+  distance_score (0-40):
+    ≤ 5 min walk  → 40
+    ≤ 10 min walk → 30
+    ≤ 15 min walk → 20
+    ≤ 30 min walk → 10
+    > 30 min      → 0
+
+  budget_score (0-25):
+    Within user budget          → 25
+    Over budget by ≤ 10%        → 15
+    Over budget by ≤ 20%        → 5
+    Over budget by > 20%        → 0
+    No budget specified by user → 15 (neutral)
+
+  must_stay_bonus (0-20):
+    Property is on Must-Stay list, rank 1-3  → 20
+    Property is on Must-Stay list, rank 4-7  → 15
+    Property is on Must-Stay list, rank 8-10 → 10
+    Property NOT on Must-Stay list           → 0
+    Must-Stay data unavailable (Fetch B skipped/failed) → 0 (no penalty)
+
+  quality_score (0-15):
+    Rating ≥ 4.5 AND reviews ≥ 50  → 15
+    Rating ≥ 4.0 AND reviews ≥ 20  → 10
+    Rating ≥ 3.5 OR  reviews ≥ 10  → 5
+    No rating data                  → 5 (neutral)
+```
+
+#### Data processing rules
+
+1. **Filtering**: If user specified budget, exclude properties > 120% of budget (allow small overshoot). If user specified room type, only include matching types.
+2. **Scoring**: Compute recommendation score for each remaining property.
+3. **Sorting**: Sort by score (highest first). On tie, sort by distance (nearest first).
+4. **Selection**: Present the top 5. If fewer than 3 remain after filtering, relax filters and note this to the user.
+5. **Price display**: Show current price. If discounted, show both: "£296/week ~~£305~~".
+6. **Distance display**: Use walk time (e.g. "5 min walk") when available. If only miles shown, keep as-is.
+7. **Dedup**: If multiple properties from the same brand appear, prefer the highest-scoring one.
+8. **Must-Stay label**: If a property is on the Must-Stay list, add a 🏆 badge in the output: "🏆 Must-Stay Recommended".
+
+**If both fetches fail**: skip to Step 4 fallback. Do not show an error to the user.
+**If only Fetch B fails**: proceed normally with Fetch A data — the scoring algorithm works without the Must-Stay bonus (all properties get 0 for that component).
 
 ---
 
@@ -112,8 +165,9 @@ From the page, extract:
 Present 3–5 properties in this format:
 
 ---
-🏠 **[Property Name]**
+🏠 **[Property Name]** [🏆 Must-Stay Recommended — if on Must-Stay list]
 📍 [X] min walk to [University] | From £[price]/week [~~£[original]~~ if discounted]
+⭐ [Rating] ([Review count] reviews) — if available
 ✅ [Highlight 1] · [Highlight 2] · [Highlight 3]
 🔗 [Book on uhomes.com]({property-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
 
@@ -124,6 +178,9 @@ After the listings, add a brief summary comparing the options (e.g. which is che
 
 Then always add:
 > 🔎 View all options → [uhomes.com – {University/City} accommodation]({search-page-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
+
+If Must-Stay data was available for this city, also add:
+> 🏆 See the full Must-Stay list → [uhomes.com Must-Stay – {City}](https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82)
 
 **Fallback response (web_fetch failed or no properties extracted)**:
 
@@ -229,6 +286,7 @@ Load these when needed:
 | `references/faq.md` | When user asks about contracts, deposits, cancellation, bills |
 | `references/city-guides.md` | When user is in Orientation intent (Intent B) — needs city overview before searching |
 | `references/decision-guide.md` | When user needs help choosing room type or has specific lifestyle needs |
+| `references/must-stay-config.md` | When performing Step 3 Fetch B — look up city_id for Must-Stay list |
 
 ---
 
