@@ -175,13 +175,15 @@ Slot 5 — ❤️ Top Rated:     highest adjusted_rating (if ≠ Slot 1-4)
 ```
 
 Rules:
-- If a slot's best candidate is already taken by an earlier slot, pick the next best for that dimension.
-- If fewer than 5 candidates remain after filtering, show what you have — do not pad.
-- Dedup: same brand appears at most once across all slots.
+- **STRICT DEDUP**: Each property can only appear in ONE slot. If a slot's best candidate is already assigned to an earlier slot, you MUST pick the next best candidate for that dimension. Never show the same property twice — even if it wins multiple dimensions.
+- If fewer than 5 unique candidates remain after filtering, show what you have — do not pad or duplicate.
+- Same brand (e.g. two "iQ" properties) may appear at most once across all slots.
+- **Must-Stay badge stacking**: If a property is on the Must-Stay list but placed in a non-Must-Stay slot (e.g. Slot 4 Best Value), still note its Must-Stay status in the highlights: "Also 🏆 Must-Stay #N".
+- **Count accuracy**: Only report the number of properties you actually extracted from the page, not the total count shown on the website header.
 
 #### Stage 4 — Explanation Labels
 
-Each property gets a **recommendation reason** based on its slot:
+Each property gets a **primary recommendation reason** based on its slot. If the property is also on the Must-Stay list (but placed in a different slot), append the Must-Stay badge as a secondary label.
 
 | Slot | Label (English) | Label (Chinese) | Label (Japanese) |
 |------|----------------|-----------------|-----------------|
@@ -226,6 +228,8 @@ Then always add:
 
 If Must-Stay data was available for this city, also add:
 > 🏆 See the full Must-Stay list → [uhomes.com Must-Stay – {City}](https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82)
+
+**CRITICAL**: Use the correct city_id from `references/must-stay-config.md` for the user's actual city. For example, Manchester = city_id=10, London = city_id=7. Never hardcode or default to London.
 
 **Fallback response (web_fetch failed or no properties extracted)**:
 
