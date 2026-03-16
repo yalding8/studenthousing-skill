@@ -88,10 +88,22 @@ web_fetch: https://en.uhomes.com/{country}/{city}/{university-slug}
 ```
 
 **Fetch B — Must-Stay list** (optional, for ranking boost):
-```
-web_fetch: https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82
-```
-**CRITICAL**: Look up `references/must-stay-config.md` for the correct city_id matching the user's search city. **Never use a different city's Must-Stay data.** If the city is not listed in the config, skip Fetch B entirely. Always use `school_id=0` (university-level filtering is not yet supported).
+
+Look up `references/must-stay-config.md` and choose the best available Must-Stay URL:
+
+1. **University-level (preferred)**: If the user's university has a known `school_id`:
+   ```
+   web_fetch: https://en.uhomes.com/must-stay?city_id=0&school_id={school_id}&ads_type=82
+   ```
+
+2. **City-level (fallback)**: If no university match but city has a known `city_id`:
+   ```
+   web_fetch: https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82
+   ```
+
+3. **Skip**: If neither university nor city is in the config, skip Fetch B entirely.
+
+**CRITICAL**: Never use a different city or university's Must-Stay data. Never guess an ID. Using wrong data is worse than having no Must-Stay data.
 
 If Fetch B fails or returns "No ranking data yet", proceed with Fetch A data only.
 
