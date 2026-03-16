@@ -91,7 +91,9 @@ web_fetch: https://en.uhomes.com/{country}/{city}/{university-slug}
 ```
 web_fetch: https://en.uhomes.com/must-stay?city_id={city_id}&school_id=0&ads_type=82
 ```
-Known city IDs: London=7. For other cities, skip Fetch B — not all cities have Must-Stay data. If Fetch B fails or returns "No ranking data yet", proceed with Fetch A data only.
+**CRITICAL**: Look up `references/must-stay-config.md` for the correct city_id matching the user's search city. **Never use a different city's Must-Stay data.** If the city is not listed in the config, skip Fetch B entirely. Always use `school_id=0` (university-level filtering is not yet supported).
+
+If Fetch B fails or returns "No ranking data yet", proceed with Fetch A data only.
 
 From **Fetch A**, extract per property:
 - Property name
