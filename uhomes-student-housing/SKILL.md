@@ -120,52 +120,82 @@ From **Fetch B**, extract:
 - Ratings and review counts
 - "Reason" tags (e.g. "Star Service", "Well-connected")
 
-#### Scoring algorithm
+#### Stage 1 — Hard Filter
 
-For each property from Fetch A, compute a **recommendation score** (0-100):
+Before scoring, remove properties that should never be recommended:
+- Rating < 3.5 (serious quality concerns)
+- Distance > 60 min walk (impractical)
+- Price > user's budget × 150% (too far above budget to be useful)
+- Room type mismatch (if user specified a type)
+
+If fewer than 3 remain after filtering, relax filters progressively (first relax budget to 200%, then remove room type filter) and note this to the user.
+
+#### Stage 2 — Scoring
+
+For each property that passed filtering, compute a **recommendation score** (0-100):
 
 ```
-score = distance_score + budget_score + must_stay_bonus + quality_score
+score = distance_score + budget_score + must_stay_score + quality_score
 
-Where:
-  distance_score (0-40):
-    ≤ 5 min walk  → 40
-    ≤ 10 min walk → 30
-    ≤ 15 min walk → 20
-    ≤ 30 min walk → 10
-    > 30 min      → 0
+distance_score (0-40) — exponential decay:
+  40 × e^(-0.05 × walk_minutes)
+  Examples: 5 min → 31, 10 min → 24, 15 min → 19, 30 min → 9
 
-  budget_score (0-25):
-    Within user budget          → 25
-    Over budget by ≤ 10%        → 15
-    Over budget by ≤ 20%        → 5
-    Over budget by > 20%        → 0
-    No budget specified by user → 15 (neutral)
+budget_score (0-25):
+  Within budget     → 25
+  Over by ≤ 20%     → 15
+  Over by ≤ 50%     → 5
+  No budget given   → 15 (neutral)
 
-  must_stay_bonus (0-20):
-    Property is on Must-Stay list, rank 1-3  → 20
-    Property is on Must-Stay list, rank 4-7  → 15
-    Property is on Must-Stay list, rank 8-10 → 10
-    Property NOT on Must-Stay list           → 0
-    Must-Stay data unavailable (Fetch B skipped/failed) → 0 (no penalty)
+must_stay_score (0-20) — smooth rank decay:
+  20 × (1 - (rank - 1) / 10)
+  Examples: rank 1 → 20, rank 2 → 18, rank 5 → 12, rank 10 → 2
+  Not on list → 0. List unavailable → 0 (no penalty).
 
-  quality_score (0-15):
-    Rating ≥ 4.5 AND reviews ≥ 50  → 15
-    Rating ≥ 4.0 AND reviews ≥ 20  → 10
-    Rating ≥ 3.5 OR  reviews ≥ 10  → 5
-    No rating data                  → 5 (neutral)
+quality_score (0-15) — Bayesian-adjusted rating:
+  adjusted_rating = (20 × 4.2 + rating × reviews) / (20 + reviews)
+  (This prevents a 5.0★ with 2 reviews from outranking 4.5★ with 200 reviews)
+
+  adjusted_rating ≥ 4.5 → 15
+  adjusted_rating ≥ 4.2 → 10
+  adjusted_rating ≥ 3.8 → 5
+  Below or no data       → 2
 ```
 
-#### Data processing rules
+#### Stage 3 — Slot-based Selection
 
-1. **Filtering**: If user specified budget, exclude properties > 120% of budget (allow small overshoot). If user specified room type, only include matching types.
-2. **Scoring**: Compute recommendation score for each remaining property.
-3. **Sorting**: Sort by score (highest first). On tie, sort by distance (nearest first).
-4. **Selection**: Present the top 5. If fewer than 3 remain after filtering, relax filters and note this to the user.
-5. **Price display**: Show current price. If discounted, show both: "£296/week ~~£305~~".
-6. **Distance display**: Use walk time (e.g. "5 min walk") when available. If only miles shown, keep as-is.
-7. **Dedup**: If multiple properties from the same brand appear, prefer the highest-scoring one.
-8. **Must-Stay label**: If a property is on the Must-Stay list, add a 🏆 badge in the output: "🏆 Must-Stay Recommended".
+**Do not** simply take the top 5 by score. Instead, fill 5 recommendation slots, each optimized for a different dimension:
+
+```
+Slot 1 — ⭐ Top Pick:      highest overall score
+Slot 2 — 🏆 Must-Stay:     highest Must-Stay rank (if ≠ Slot 1; if no Must-Stay data, highest quality_score)
+Slot 3 — 📍 Closest:       shortest distance (if ≠ Slot 1-2)
+Slot 4 — 💰 Best Value:    lowest price (if ≠ Slot 1-3)
+Slot 5 — ❤️ Top Rated:     highest adjusted_rating (if ≠ Slot 1-4)
+```
+
+Rules:
+- If a slot's best candidate is already taken by an earlier slot, pick the next best for that dimension.
+- If fewer than 5 candidates remain after filtering, show what you have — do not pad.
+- Dedup: same brand appears at most once across all slots.
+
+#### Stage 4 — Explanation Labels
+
+Each property gets a **recommendation reason** based on its slot:
+
+| Slot | Label (English) | Label (Chinese) | Label (Japanese) |
+|------|----------------|-----------------|-----------------|
+| 1 | ⭐ Top pick — best overall match | ⭐ 综合推荐 — 最佳匹配 | ⭐ おすすめ — 総合評価トップ |
+| 2 | 🏆 #N on uhomes Must-Stay list | 🏆 uhomes 必住榜第 N 名 | 🏆 uhomes 必住リスト第N位 |
+| 3 | 📍 Closest to campus — X min walk | 📍 距离最近 — 步行 X 分钟 | 📍 キャンパス最寄り — 徒歩X分 |
+| 4 | 💰 Best value — £X/week | 💰 价格最优 — £X/周 | 💰 最安値 — £X/週 |
+| 5 | ❤️ Highest rated — X.X★ (N reviews) | ❤️ 口碑最佳 — X.X★（N条评价） | ❤️ 最高評価 — X.X★（N件） |
+
+#### Data formatting rules
+
+- **Price display**: Show current price. If discounted: "£296/week ~~£305~~".
+- **Distance display**: Use walk time when available. If only miles, keep as-is.
+- **Rating display**: Show adjusted rating + review count: "4.5★ (200 reviews)".
 
 **If both fetches fail**: skip to Step 4 fallback. Do not show an error to the user.
 **If only Fetch B fails**: proceed normally with Fetch A data — the scoring algorithm works without the Must-Stay bonus (all properties get 0 for that component).
@@ -179,9 +209,10 @@ Where:
 Present 3–5 properties in this format:
 
 ---
-🏠 **[Property Name]** [🏆 Must-Stay Recommended — if on Must-Stay list]
+[Slot label — e.g. ⭐ Top pick / 🏆 Must-Stay #3 / 📍 Closest / 💰 Best value / ❤️ Top rated]
+🏠 **[Property Name]**
 📍 [X] min walk to [University] | From £[price]/week [~~£[original]~~ if discounted]
-⭐ [Rating] ([Review count] reviews) — if available
+⭐ [Adjusted rating]★ ([Review count] reviews) — if available
 ✅ [Highlight 1] · [Highlight 2] · [Highlight 3]
 🔗 [Book on uhomes.com]({property-url}?xcode=000a95434637bdf71105&utm_source=openclaw&utm_medium=ai_skill&utm_campaign=student-housing-skill-v1&utm_content={city-slug})
 
