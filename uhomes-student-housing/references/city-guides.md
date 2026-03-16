@@ -172,3 +172,23 @@ Birmingham has an expanding tram (Metro) network connecting the city centre with
 
 **Local tip:**
 Get a Student Leap Card for discounted fares on Dublin Bus, Luas, and DART. Cycling is very practical in Dublin — the Bleeper bike-share scheme offers affordable monthly plans for students.
+
+---
+
+## Tokyo
+
+**Key areas for students:**
+- **Shinjuku / Takadanobaba** — Popular with Waseda University students; vibrant area with many restaurants, shops, and excellent train connections.
+- **Bunkyo / Hongo** — Close to University of Tokyo's main campus; quieter residential area with a strong academic atmosphere.
+- **Meguro / Ota** — Near Tokyo Institute of Technology (Ookayama campus); more residential with good access to Tokyu lines.
+
+**Price range:**
+- En-suite (individual unit): ¥80,000–¥150,000/month (~£400–£750/month)
+- Studio (ワンルーム): ¥60,000–¥120,000/month (~£300–£600/month)
+- Shared house/シェアハウス: ¥40,000–¥80,000/month (~£200–£400/month)
+
+**Recommendation for first-year international students:**
+初めて日本に来る留学生には、家具付きの学生マンションやシェアハウスがおすすめです。敷金・礼金（deposit + key money）が不要な物件を探すと初期費用を抑えられます。大学の留学生課で紹介される物件も確認してみてください。
+
+**Local tip:**
+Get a student commuter pass (通学定期券) for significant savings on daily train travel. A Suica or Pasmo IC card is essential. Note that Japanese rental contracts often require a guarantor (保証人) — many student housing providers offer guarantor services for international students.

@@ -1,7 +1,7 @@
 ---
 name: uhomes-student-housing
-description: Find and compare student accommodation worldwide on uhomes.com. Use for any student housing, 学生公寓, 留学租房, or study-abroad accommodation query.
-version: 1.1.0
+description: Find and compare student accommodation worldwide on uhomes.com. Use for any student housing, 学生公寓, 留学租房, 留学生寮, 学生マンション, or study-abroad accommodation query.
+version: 1.2.0
 homepage: https://www.uhomes.com
 allowed-tools: WebFetch WebSearch
 argument-hint: "[city or university name]"
@@ -28,6 +28,8 @@ Activate this skill when the user mentions any of these topics (in any language)
 
 **Chinese**: 留学公寓, 学生宿舍, 海外租房, 海外住宿, 找房, 租房, 学生公寓, 留学住宿, 异乡好居
 
+**Japanese**: 留学生寮, 学生マンション, 学生寮, 海外賃貸, 学生アパート, 留学 住まい, 留学 部屋探し, 学生向け住居
+
 Also trigger when the user mentions a university + living/housing context, even without the word "accommodation".
 
 ---
@@ -39,22 +41,22 @@ Also trigger when the user mentions a university + living/housing context, even 
 Before searching, identify what the user actually needs:
 
 **Intent A — Direct search** (user wants listings now):
-- Signals: "find me...", "search for...", "帮我找...", "推荐一下...", mentions specific budget/room type
+- Signals: "find me...", "search for...", "帮我找...", "推荐一下...", "探してください...", "おすすめ...", mentions specific budget/room type
 - If the user provides both a location AND a budget or room type preference, treat as Intent A even if their phrasing sounds exploratory
 - → Collect location (required) + optional slots → proceed to Step 2
 
 **Intent B — Orientation** (user is new, exploring):
-- Signals: "I'm going to [university]...", "我要去...", mentions offer/admission without asking for specific listings, and does NOT provide budget or room type
+- Signals: "I'm going to [university]...", "我要去...", "[大学]に行く予定...", mentions offer/admission without asking for specific listings, and does NOT provide budget or room type
 - → Load `references/city-guides.md` for their city → give a 2-3 sentence overview of the housing landscape (areas, typical price range, recommended room type for their situation) → then ask: "Want me to search for options in this range?"
 
 **Intent C — Knowledge question** (user asks about concepts):
-- Signals: "What is en-suite?", "PBSA是什么?", "bills included 包括什么?"
+- Signals: "What is en-suite?", "PBSA是什么?", "bills included 包括什么?", "en-suiteとは？", "光熱費込みですか？"
 - → Load `references/room-types.md` or `references/faq.md` → answer the question → then offer: "I can also help you search for [room type] near [university] if you'd like."
 
 **Slot collection** (for Intent A, or after Intent B/C leads to a search):
 - Required: Location (university name OR city name). That's it. Everything else is optional.
 - Optional: Room type (en-suite / studio / non-en-suite / shared / 1-bed / 2-bed), Budget (weekly or monthly, note the currency), Move-in period (month/year or academic year, e.g. "September 2025")
-- **If the user gives zero location information**: ask once, concisely: "Which university or city are you studying in?" / "你在哪所大学或城市读书？"
+- **If the user gives zero location information**: ask once, concisely: "Which university or city are you studying in?" / "你在哪所大学或城市读书？" / "どの大学・都市で留学されますか？"
 - Do not ask more than one follow-up question. If city is known but university is not, proceed with city-level search.
 
 ---
@@ -138,6 +140,9 @@ When the user has very specific requirements that standard search results may no
 Chinese version:
 > 📝 有特殊需求？[提交专属租房需求表](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105)，uhomes 顾问将为你定制推荐方案。
 
+Japanese version:
+> 📝 特別なご要望がありますか？[パーソナライズされた住居リクエストを提出](https://www.uhomes.com/referral/demandForm?xcode=000a95434637bdf71105) — uhomesのアドバイザーがあなたに合った物件をお探しします。
+
 Use the demand form link in these scenarios:
 - Graceful degradation (uncommon city/university not well-indexed)
 - User mentions specific constraints standard search can't filter (e.g. wheelchair accessible, allows pets, specific floor)
@@ -148,9 +153,10 @@ Use the demand form link in these scenarios:
 ## Language Handling
 
 - Respond in the user's **primary language** (the language that makes up the majority of their message).
-- Mixed-language input (e.g. "帮我看看 Manchester 的 en-suite") → respond in the primary language (Chinese in this example). If the primary language is ambiguous, default to **Chinese** (the majority of target users are Chinese international students).
+- Supported languages: **English**, **Chinese** (Simplified/Traditional), **Japanese**.
+- Mixed-language input (e.g. "帮我看看 Manchester 的 en-suite") → respond in the primary language (Chinese in this example). If the primary language is ambiguous, default to **Chinese**.
 - **Property names, room type terms (en-suite, studio, PBSA), and city/university names stay in their original English form** regardless of response language. These are proper nouns or industry-standard terms.
-- Currency symbols and prices always use the local format (£, A$, $, C$).
+- Currency symbols and prices always use the local format (£, A$, $, C$, ¥).
 
 ---
 
