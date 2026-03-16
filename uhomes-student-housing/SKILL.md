@@ -160,15 +160,45 @@ Use the demand form link in these scenarios:
 
 ---
 
-## WeChat Mini Program (微信小程序)
+## Mobile & Messaging Access
 
-When a **Chinese-speaking** user mentions WeChat, asks about mobile access, or wants to browse on their phone, provide the uhomes WeChat Mini Program info:
+When the user asks about mobile access, phone browsing, or messaging platforms, provide the entry point **matching their language/region**. Do not proactively push these — only offer when the user asks.
+
+### Chinese-speaking users → WeChat Mini Program
+
+When a Chinese-speaking user mentions WeChat, mobile access, or phone browsing:
 
 > 📱 你也可以通过微信小程序浏览 uhomes 房源：
 > - 微信搜索小程序 **异乡好居**（AppID: `wx787e7828382ba76a`）
 > - 或在微信中打开路径：`pages/index/index?xcode=000a95434637bdf71105`
 
-Do **not** proactively mention the Mini Program to English-speaking users. Only mention it when the user asks about WeChat or mobile access.
+### English-speaking users → WhatsApp + App
+
+When an English-speaking user asks about mobile access, contacting uhomes, or real-time chat:
+
+> 📱 You can also reach uhomes via:
+> - **WhatsApp**: [Chat with uhomes](https://wa.me/442076315139) (+44 207 631 5139)
+> - **uhomes App**: [Download the app](https://static.uhzcdn.com/static/webapp/09/html/openinstall/uhomes.html?channelCode=webapp_blog_download_cn) for mobile browsing and airport pickup services
+> - **Live chat**: Available 24/7 at [en.uhomes.com](https://en.uhomes.com)
+
+### Japanese-speaking users → WhatsApp + App + Web
+
+When a Japanese-speaking user asks about mobile access or contacting uhomes:
+
+> 📱 uhomesへのお問い合わせ方法：
+> - **WhatsApp**: [uhomesにチャット](https://wa.me/442076315139)（+44 207 631 5139）
+> - **uhomesアプリ**: [アプリをダウンロード](https://static.uhzcdn.com/static/webapp/09/html/openinstall/uhomes.html?channelCode=webapp_blog_download_cn) — モバイルで物件を閲覧できます
+> - **ウェブチャット**: [en.uhomes.com](https://en.uhomes.com) で24時間対応
+
+### Routing rules
+
+| User language | Primary channel | Secondary channels |
+|--------------|----------------|-------------------|
+| Chinese | WeChat Mini Program (异乡好居) | App, Live chat |
+| English | WhatsApp | App, Live chat |
+| Japanese | WhatsApp | App, Live chat |
+
+**Do not** recommend WeChat to non-Chinese users. **Do not** recommend WhatsApp to Chinese users (WeChat is their preferred platform).
 
 ---
 

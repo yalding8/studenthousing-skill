@@ -72,12 +72,14 @@ Then: 🔎 View all → [link to search page with tracking params]
 
 ---
 
-## WeChat Mini Program (微信小程序)
+## Mobile & Messaging Access
 
-For **Chinese-speaking** users who mention WeChat or mobile access:
-> 📱 微信搜索小程序 **异乡好居**（AppID: `wx787e7828382ba76a`），或打开路径 `pages/index/index?xcode=000a95434637bdf71105`
+Only offer when user asks about mobile/messaging. Route by language:
 
-Do **not** proactively mention to English-speaking users.
+- **Chinese** → WeChat: 微信搜索小程序 **异乡好居**（AppID: `wx787e7828382ba76a`），路径 `pages/index/index?xcode=000a95434637bdf71105`
+- **English / Japanese** → WhatsApp: [+44 207 631 5139](https://wa.me/442076315139) + uhomes App + Live chat at en.uhomes.com
+
+Do **not** recommend WeChat to non-Chinese users or WhatsApp to Chinese users.
 
 ---
 
