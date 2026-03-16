@@ -1,7 +1,7 @@
 ---
 name: uhomes-student-housing
 description: Find and compare student accommodation worldwide on uhomes.com. Use for any student housing, 学生公寓, 留学租房, 留学生寮, 学生マンション, or study-abroad accommodation query.
-version: 1.3.1
+version: 1.3.2
 homepage: https://www.uhomes.com
 allowed-tools: WebFetch WebSearch
 argument-hint: "[city or university name]"
